@@ -48,6 +48,7 @@ func CreateAndStartServer(appCtx AppContext) {
 	geyserGroup := router.Group("/geyser", userCtx.controller.ValidateKeyMiddleware)
 	geyserGroup.GET("/status", geyserCtx.controller.GetStatus)
 	geyserGroup.POST("/action", geyserCtx.controller.DoGeyserAction)
+  geyserGroup.GET("/history", geyserCtx.controller.GetGeyserHistory)
 
 	err := router.Run(fmt.Sprintf("0.0.0.0:%d", appCtx.ServerPort))
 	if err != nil {

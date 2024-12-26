@@ -8,6 +8,13 @@ import (
 	"time"
 )
 
+type GeyserHistory struct {
+	ID          int32
+	Action      string
+	ResidentKey string
+	CreatedAt   time.Time
+}
+
 type GeyserStatus struct {
 	IsOn      bool
 	ActionBy  string

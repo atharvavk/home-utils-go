@@ -11,3 +11,14 @@ CREATE TABLE `residents` (
   `display_name` varchar(100) NOT NULL,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `geyser_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action` varchar(100) NOT NULL,
+  `resident_key` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `geyser_history_residents_FK` (`resident_key`),
+  CONSTRAINT `geyser_history_residents_FK` FOREIGN KEY (`resident_key`) REFERENCES `residents` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
