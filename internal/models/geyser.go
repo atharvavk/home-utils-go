@@ -7,9 +7,10 @@ import (
 )
 
 type GetGeyserStatusResponse struct {
-	IsOn        bool   `json:"isOn"`
-	UpdatedAt   string `json:"changeTime"`
-	DisplayName string `json:"actionBy"`
+	IsOn         bool   `json:"isOn"`
+	UpdatedAt    string `json:"changeTime"`
+	DisplayName  string `json:"actionBy"`
+	IsUserAction bool   `json:"isUserAction"`
 }
 
 type GeyserActionResponse struct {
@@ -43,25 +44,27 @@ func formatTimeString(t time.Time) string {
 	return fmt.Sprintf("%d %s %d %d:%d", day, month.String(), year, hour, minute)
 }
 
-func NewGetGeyserStatusResponse(row repository.GetGeyserStatusRow) GetGeyserStatusResponse {
+func NewGetGeyserStatusResponse(userKey string, row repository.GetGeyserStatusRow) GetGeyserStatusResponse {
 	return GetGeyserStatusResponse{
-		IsOn:        row.IsOn,
-		DisplayName: row.DisplayName,
-		UpdatedAt:   formatTimeString(row.UpdatedAt),
+		IsOn:         row.IsOn,
+		UpdatedAt:    formatTimeString(row.UpdatedAt),
+		DisplayName:  row.DisplayName,
+		IsUserAction: row.Key == userKey,
+
 	}
 }
 
-func NewGetGeyserHistoryResponse(rows []repository.GetGeyserHistoryPaginatedRow, numRows int)GetGeyserHistoryResponse{
-  records := make([]GeyserHistoryRecord, len(rows)) 
-  for i, row := range rows {
-    records[i] = GeyserHistoryRecord{
-    	Action:row.Action,
-    	Resident:row.DisplayName,
-    	Time:     formatTimeString(row.CreatedAt),
-    }
-  }
-  return GetGeyserHistoryResponse{
-  	NumRecord: numRows,
-  	Records:   records,
-  }
+func NewGetGeyserHistoryResponse(rows []repository.GetGeyserHistoryPaginatedRow, numRows int) GetGeyserHistoryResponse {
+	records := make([]GeyserHistoryRecord, len(rows))
+	for i, row := range rows {
+		records[i] = GeyserHistoryRecord{
+			Action:   row.Action,
+			Resident: row.DisplayName,
+			Time:     formatTimeString(row.CreatedAt),
+		}
+	}
+	return GetGeyserHistoryResponse{
+		NumRecord: numRows,
+		Records:   records,
+	}
 }

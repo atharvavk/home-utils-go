@@ -21,7 +21,8 @@ func NewGeyserController(logger *zap.Logger, geyserService GeyserService) Geyser
 }
 
 func (gc GeyserController) GetStatus(c *gin.Context) {
-	response, err := gc.geyserService.GetGeyserStatus()
+  userKey := c.GetHeader("key")
+	response, err := gc.geyserService.GetGeyserStatus(userKey)
 	if err != nil {
 		var badReqErr models.BadReqErr
 		if errors.As(err, &badReqErr) {

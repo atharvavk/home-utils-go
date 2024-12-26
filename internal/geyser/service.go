@@ -68,14 +68,14 @@ func (gs GeyserService) DoGeyserAction(userKey string, isActionOn bool) (models.
 	return models.GeyserActionResponse{Success: true}, nil
 }
 
-func (gs GeyserService) GetGeyserStatus() (models.GetGeyserStatusResponse, error) {
+func (gs GeyserService) GetGeyserStatus(userKey string) (models.GetGeyserStatusResponse, error) {
 	repo := repository.New(gs.sqlConn)
 	status, err := repo.GetGeyserStatus(context.TODO())
 	if err != nil {
 		gs.logger.Error("INTERNAL SERVER ERROR", zap.String("error", err.Error()))
 		return models.GetGeyserStatusResponse{}, err
 	}
-	return models.NewGetGeyserStatusResponse(status), nil
+	return models.NewGetGeyserStatusResponse(userKey, status), nil
 }
 
 func NewGeyserService(logger *zap.Logger, sqlConn *sql.DB) GeyserService {

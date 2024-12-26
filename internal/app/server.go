@@ -5,6 +5,7 @@ import (
 	"home-utils/internal/geyser"
 	"home-utils/internal/user"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,6 +38,13 @@ func initUserContext(appCtx AppContext) userContext {
 
 func CreateAndStartServer(appCtx AppContext) {
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+    AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
 	userCtx := initUserContext(appCtx)
 	geyserCtx := initGeyserContext(appCtx)
 
@@ -48,7 +56,7 @@ func CreateAndStartServer(appCtx AppContext) {
 	geyserGroup := router.Group("/geyser", userCtx.controller.ValidateKeyMiddleware)
 	geyserGroup.GET("/status", geyserCtx.controller.GetStatus)
 	geyserGroup.POST("/action", geyserCtx.controller.DoGeyserAction)
-  geyserGroup.GET("/history", geyserCtx.controller.GetGeyserHistory)
+	geyserGroup.GET("/history", geyserCtx.controller.GetGeyserHistory)
 
 	err := router.Run(fmt.Sprintf("0.0.0.0:%d", appCtx.ServerPort))
 	if err != nil {
